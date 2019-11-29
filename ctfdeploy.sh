@@ -53,9 +53,14 @@ read droplet_size
 droplet_size=${droplet_size:-s-1vcpu-1gb}
 
 # Prompt for the CTFd Dashboard port
-echo -n -e "${Col_White}CTFd dashboard port [80]: ${Col_Default}"
+echo -n -e "${Col_White}CTFd dashboard exposed port [80]: ${Col_Default}"
 read dashboard_port
 dashboard_port=${dashboard_port:-80}
+
+# Prompt for the CTFd internal port
+echo -n -e "${Col_White}CTFd internal port [8000]: ${Col_Default}"
+read ctfd_internal_port
+ctfd_internal_port=${ctfd_internal_port:-8000}
 
 while [ -z "$access_token" ]
 do
@@ -97,7 +102,7 @@ eval $(docker-machine env $droplet_name)
 
 # Run the docker container
 echo -e "${Col_Cyan}Starting the CTFd docker container${Col_Default}"
-docker run -d -p $dashboard_port:8000 $docker_image
+docker run -d -p $dashboard_port:$ctfd_internal_port $docker_image
 
 # Done
 echo -e "\n${Col_White}You can now connect to your dashboard on http://$ip_address:$dashboard_port"
